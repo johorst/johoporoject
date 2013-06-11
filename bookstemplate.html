@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8"/>
+</head>
+<body>
+<script src="js/jquery.js"></script>
+<script src="js/jquery.json-2.4.js"></script>
+<script src="js/underscore.js"></script>
+<script src="js/backbone.js"></script>
+<script src="js/app.js"></script>
+<div id="myframe">
+</div>
+<div id="books">
+    <script id="bookTemplate" type="text/template">
+        <ul>
+            <li><%= title %></li>
+            <li><%= author %></li>
+            <li><%= releaseDate %></li>
+            <li><%= keywords %></li>
+        </ul>
+        <button class="delete">Delete</button>
+    </script>
+</div>
+<div llE="" />
+<div llN="" />
+
+<div id="books">
+</div>
+<script>
+  if(document.URL.split("ll")[1][0] != "N") alert("erster ist Parameter NICHT N - jetzt ist alles hin")
+  var llN = document.URL.split("ll")[1].slice(2,document.URL.split("ll")[1].length-1);
+  var llE = document.URL.split("ll")[2].slice(2,document.URL.split("ll")[2].length); 
+  var c = $.get('/api/book?llN='+llN+'&llE='+llE)
+  .success( function(data) {
+                   alert(getNearestOfSome(eval(c.responseText)));
+                   $('#books').append("<b>" + c.responseText.split(":")[1] + "</b>" + c.responseText.split(":")[2] );
+  var f = c.responseText.split(":")[6].substring(0,7) + "_" + c.responseText.split(":")[7].substring(0,7);
+  var e = '<iframe width="200" height="150" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://dev.virtualearth.net/embeddedMap/v1/ajax/birdseye?zoomLevel=19&pushpins=47.5_-122.5&center=' + f + '"/>';
+  $('#myframe').append(e);
+           });
+
+function getNearestOfSome(arr){
+  var iniDist = Number.MAX_VALUE;
+  var shortest = 0;
+  for(var i = 0; i < arr.length; i++){
+    if(Math.abs(llE - arr[i].llE) + Math.abs(llN - arr[i].llN) < iniDist){
+      iniDist = Math.abs(llE - arr[i].llE) + Math.abs(llN - arr[i].llN);
+      shortest = i;
+    }
+  }
+  return shortest;
+}
+</script>   
+</body>
+</html>
